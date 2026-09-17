@@ -1,10 +1,24 @@
-/* You can add global styles to this file, and also import other style files */
+@import '@fontsource/ibm-plex-sans/latin-400.css';
+@import '@fontsource/ibm-plex-sans/latin-ext-400.css';
+@import '@fontsource/ibm-plex-sans/latin-500.css';
+@import '@fontsource/ibm-plex-sans/latin-ext-500.css';
+@import '@fontsource/ibm-plex-sans/latin-600.css';
+@import '@fontsource/ibm-plex-sans/latin-ext-600.css';
+@import '@fontsource/space-grotesk/latin-500.css';
+@import '@fontsource/space-grotesk/latin-ext-500.css';
+@import '@fontsource/space-grotesk/latin-600.css';
+@import '@fontsource/space-grotesk/latin-ext-600.css';
+@import '@fontsource/ibm-plex-mono/latin-400.css';
+@import '@fontsource/ibm-plex-mono/latin-ext-400.css';
+@import '@fontsource/ibm-plex-mono/latin-500.css';
+@import '@fontsource/ibm-plex-mono/latin-ext-500.css';
+
 :root {
   --ink: #11333f;
   --ink-2: #0c262f;
-  --ink-70: rgba(17, 51, 63, 0.7);
-  --ink-50: rgba(17, 51, 63, 0.5);
-  --ink-30: rgba(17, 51, 63, 0.3);
+  --ink-70: rgba(17, 51, 63, 0.78);
+  --ink-50: rgba(17, 51, 63, 0.72);
+  --ink-30: rgba(17, 51, 63, 0.45);
   --ink-14: rgba(17, 51, 63, 0.14);
   --ink-08: rgba(17, 51, 63, 0.08);
   --paper: #f6f4ee;
@@ -12,6 +26,7 @@
   --card: #ffffff;
   --mint: #2ecc99;
   --blue: #338cb2;
+  --blue-text: #1f6485;
   --gold: #d9a640;
   --coral: #f2734d;
   --mint-tint: rgba(46, 204, 153, 0.08);
@@ -35,7 +50,6 @@ body {
   font-size: 16px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
 }
 h1,
 h2,
@@ -85,6 +99,27 @@ button:focus-visible {
   outline-offset: 3px;
 }
 
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 10px 14px;
+  background: var(--ink);
+  color: var(--paper);
+  text-decoration: none;
+  transform: translateY(-150%);
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+section[id],
+#top,
+#main-content {
+  scroll-margin-top: 88px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;
@@ -105,7 +140,7 @@ header.nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 0;
+  padding-block: 18px;
 }
 .nav-logo svg {
   height: 42px;
@@ -192,8 +227,11 @@ nav.links a:not(.btn):hover {
 
 @media (max-width: 780px) {
   nav.links {
-    position: fixed;
-    inset: 65px 0 auto 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    z-index: 61;
     background: var(--paper);
     flex-direction: column;
     align-items: flex-start;
@@ -203,6 +241,7 @@ nav.links a:not(.btn):hover {
     box-shadow: var(--shadow-sm);
     transform: translateY(-8px);
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
     transition:
       transform 0.2s ease,
@@ -211,6 +250,7 @@ nav.links a:not(.btn):hover {
   nav.links.open {
     transform: translateY(0);
     opacity: 1;
+    visibility: visible;
     pointer-events: auto;
   }
   nav.links a:not(.btn) {
@@ -263,9 +303,12 @@ nav.links a:not(.btn):hover {
   gap: 56px;
   align-items: center;
 }
+.hero-grid > * {
+  min-width: 0;
+}
 .hero h1 {
-  font-size: clamp(36px, 4.6vw, 58px);
-  max-width: 12.5em;
+  font-size: clamp(32px, 4.4vw, 54px);
+  max-width: 16em;
 }
 .hero-sub {
   margin-top: 26px;
@@ -301,49 +344,84 @@ nav.links a:not(.btn):hover {
   align-items: center;
   gap: 22px;
 }
-.hex-stage {
-  width: 100%;
-  max-width: 320px;
-  aspect-ratio: 112 / 125;
+.hero-shots {
   position: relative;
-  filter: drop-shadow(0 30px 50px rgba(17, 51, 63, 0.16));
-}
-.hex-stage svg {
   width: 100%;
-  height: 100%;
-  overflow: visible;
+  min-height: 340px;
 }
-.hex-base {
-  transform-origin: 56px 62px;
-  animation: hexBaseIn 1.05s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  animation-delay: 0.05s;
+.shot {
+  background: var(--card);
+  border: 1px solid var(--ink-08);
+  border-radius: 10px;
+  overflow: hidden;
 }
-.hex-top {
-  transform-origin: 56px 62px;
-  animation: hexTopIn 1.05s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  animation-delay: 0.42s;
+.shot-chrome {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  background: var(--paper-dim);
+  border-bottom: 1px solid var(--ink-08);
 }
-@keyframes hexBaseIn {
-  from {
-    opacity: 0;
-    transform: translateY(26px) scale(0.86);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+.shot-chrome span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ink-14);
 }
-@keyframes hexTopIn {
-  from {
-    opacity: 0;
-    transform: translateY(-18px) scale(0.9) rotate(-4deg);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1) rotate(0deg);
-  }
+.shot-surface {
+  min-height: 168px;
 }
-.hex-caption {
+.shot-placeholder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  min-height: 168px;
+  padding: 22px 24px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--paper),
+    var(--paper) 10px,
+    var(--paper-dim) 10px,
+    var(--paper-dim) 11px
+  );
+}
+.shot-placeholder strong {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+}
+.shot-placeholder p {
+  max-width: 28ch;
+  color: var(--ink-70);
+  font-size: 14px;
+}
+.shot-placeholder-sm {
+  min-height: 120px;
+  padding: 18px 20px;
+}
+.shot-placeholder-sm strong {
+  font-size: 16px;
+}
+.shot-primary {
+  width: 88%;
+  position: relative;
+  z-index: 1;
+}
+.shot-primary .shot-placeholder {
+  min-height: 220px;
+  padding-bottom: 88px;
+}
+.shot-secondary {
+  width: 72%;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+}
+.shot-caption {
   display: flex;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12.5px;
@@ -351,13 +429,41 @@ nav.links a:not(.btn):hover {
   background: var(--card);
   border: 1px solid var(--ink-08);
   border-radius: 30px;
-  box-shadow: var(--shadow-sm);
 }
-.hex-caption span {
+.shot-caption span {
   padding: 9px 18px;
 }
-.hex-caption span + span {
+.shot-caption span + span {
   border-left: 1px solid var(--ink-14);
+}
+@media (max-width: 860px) {
+  .hero {
+    padding: 56px 0 48px;
+  }
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .hero-art {
+    order: 2;
+  }
+  .hero-shots {
+    min-height: 280px;
+  }
+  .shot-primary,
+  .shot-secondary {
+    width: 100%;
+    position: relative;
+    right: auto;
+    bottom: auto;
+  }
+  .shot-primary .shot-placeholder {
+    min-height: 160px;
+    padding-bottom: 22px;
+  }
+  .shot-secondary {
+    margin-top: 12px;
+  }
 }
 
 /* ---------- section shell ---------- */
@@ -384,7 +490,7 @@ section {
 .section-eyebrow {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12.5px;
-  color: var(--blue);
+  color: var(--blue-text);
   margin-bottom: 14px;
   display: block;
 }
@@ -431,10 +537,45 @@ section {
   color: var(--ink-70);
   font-size: 15px;
 }
+.service-example {
+  margin-top: 10px;
+  color: var(--ink-50);
+  font-size: 13.5px;
+}
 @media (max-width: 860px) {
   .services {
     grid-template-columns: 1fr;
   }
+}
+
+.sectors {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  margin-top: 48px;
+  padding-top: 28px;
+  border-top: 1px solid var(--ink-08);
+}
+.sectors-label {
+  font-size: 12.5px;
+  color: var(--blue-text);
+}
+.sectors ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sectors li {
+  font-size: 13.5px;
+  color: var(--ink);
+  padding: 7px 12px;
+  border: 1px solid var(--ink-14);
+  border-radius: 30px;
+  background: var(--card);
 }
 
 /* ---------- products ---------- */
@@ -442,7 +583,7 @@ section {
   max-width: 62ch;
   font-size: 17px;
   color: var(--ink-70);
-  margin-bottom: 54px;
+  margin-bottom: 40px;
 }
 .product {
   display: grid;
@@ -457,7 +598,7 @@ section {
   margin-top: 30px;
 }
 .product-info {
-  padding: 46px 42px;
+  padding: 36px 34px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -467,9 +608,31 @@ section {
   display: flex;
   align-items: center;
   gap: 1rem;
-  img {
-    height: 2rem;
-  }
+}
+.product-title img {
+  height: 2rem;
+  width: auto;
+}
+.product-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 22px;
+  margin-top: 22px;
+}
+.product-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14.5px;
+  font-weight: 500;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--ink);
+  width: fit-content;
+  transition: gap 0.15s ease;
+}
+.product-link-secondary {
+  border-bottom-color: var(--ink-30);
+  font-weight: 400;
 }
 .product-info.ciceron {
   background: linear-gradient(160deg, var(--mint-tint), var(--card) 60%);
@@ -478,9 +641,17 @@ section {
   background: linear-gradient(160deg, var(--gold-tint), var(--card) 60%);
 }
 .product-features {
-  padding: 46px 42px;
+  padding: 36px 34px;
   background: var(--card);
   border-left: 1px solid var(--ink-08);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.product-shot {
+  border: 1px solid var(--ink-08);
+  border-radius: 8px;
+  overflow: hidden;
 }
 .product-tag {
   display: inline-flex;
@@ -501,8 +672,14 @@ section {
   border-radius: 50%;
   display: inline-block;
 }
+.dot.mint {
+  background: var(--mint);
+}
+.dot.gold {
+  background: var(--gold);
+}
 .product-name {
-  font-size: clamp(26px, 3vw, 34px);
+  font-size: clamp(24px, 2.6vw, 30px);
 }
 .product-desc {
   margin-top: 16px;
@@ -510,27 +687,46 @@ section {
   font-size: 15.5px;
   max-width: 38ch;
 }
-.product-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 26px;
-  font-size: 14.5px;
-  font-weight: 500;
-  padding-bottom: 2px;
-  border-bottom: 1px solid var(--ink);
-  width: fit-content;
-  transition: gap 0.15s ease;
-}
 .product-link:hover {
   gap: 12px;
 }
+.catalog-note {
+  margin-top: 36px;
+  padding: 32px 36px;
+  background: var(--card);
+  border: 1px solid var(--ink-08);
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 28px;
+}
+.catalog-note h3 {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+.catalog-note p {
+  max-width: 58ch;
+  color: var(--ink-70);
+  font-size: 15px;
+}
+.catalog-note .btn {
+  flex-shrink: 0;
+}
+@media (max-width: 780px) {
+  .catalog-note {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 28px 24px;
+  }
+}
+
 .feature-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 24px;
+  gap: 18px;
 }
 .feature-list li {
   padding-left: 24px;
@@ -586,7 +782,10 @@ section {
   color: var(--paper);
 }
 .approach-section .section-head p {
-  color: rgba(246, 244, 238, 0.5);
+  color: rgba(246, 244, 238, 0.78);
+}
+.approach-section .section-eyebrow {
+  color: var(--mint);
 }
 .approach {
   display: grid;
@@ -619,11 +818,6 @@ section {
   .approach-section {
     padding: 60px 26px;
     border-radius: 8px;
-  }
-}
-@media (max-width: 480px) {
-  .approach-section {
-    margin: 0 -6px;
   }
 }
 
@@ -663,7 +857,7 @@ section {
   flex-wrap: wrap;
 }
 .band-contact {
-  color: rgba(246, 244, 238, 0.6);
+  color: rgba(246, 244, 238, 0.78);
   font-size: 13.5px;
   display: grid;
   gap: 7px;
@@ -705,9 +899,11 @@ footer {
 }
 .footer-links {
   display: flex;
-  gap: 24px;
+  flex-wrap: wrap;
+  gap: 12px 24px;
   font-size: 13.5px;
-  color: var(--ink-50);
+  color: var(--ink-70);
+  max-width: 100%;
 }
 .footer-links a:hover {
   color: var(--ink);

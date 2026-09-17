@@ -1,13 +1,20 @@
+import { NgOptimizedImage } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { projectMailto } from './home/content';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  template: `<header class="nav">
+  imports: [NgOptimizedImage, RouterOutlet],
+  host: {
+    '(document:keydown.escape)': 'closeMenu()',
+    '(document:click)': 'closeMenu()',
+  },
+  template: `<a class="skip-link" href="#main-content">Saltar al contenido</a>
+    <header class="nav">
       <div class="wrap nav-inner">
-        <a href="#top" class="nav-logo" aria-label="Quadratic Solution">
-          <svg viewBox="0 0 341 89" xmlns="http://www.w3.org/2000/svg">
+        <a href="#top" class="nav-logo" aria-label="Quadratic Solution, página de inicio">
+          <svg viewBox="0 0 341 89" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path
               d="M0 66.6669L7.05001e-06 22.2202L22.2221 34.5665V54.444L40 64.4446L57.7776 54.444V34.5665L80 22.2202V66.6669L40 88.8902L0 66.6669Z"
               fill="#11333F"
@@ -39,34 +46,62 @@ import { RouterOutlet } from '@angular/router';
             </defs>
           </svg>
         </a>
-        <nav class="links" id="navLinks">
-          <a href="#servicios">Servicios</a>
-          <a href="#productos">Productos</a>
-          <a href="#enfoque">Enfoque</a>
-          <a href="#contacto">Contacto</a>
-          <a href="#contacto" class="btn btn-primary">Iniciar un proyecto</a>
+        <nav
+          class="links"
+          id="primary-navigation"
+          aria-label="Navegación principal"
+          [class.open]="menuOpen()"
+          (click)="$event.stopPropagation()"
+        >
+          <a href="#servicios" (click)="closeMenu()">Servicios</a>
+          <a href="#productos" (click)="closeMenu()">Productos</a>
+          <a href="#enfoque" (click)="closeMenu()">Enfoque</a>
+          <a href="#contacto" (click)="closeMenu()">Contacto</a>
+          <a [href]="projectMailto" class="btn btn-primary" (click)="closeMenu()"
+            >Iniciar un proyecto</a
+          >
         </nav>
-        <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-controls="primary-navigation"
+          [class.open]="menuOpen()"
+          [attr.aria-expanded]="menuOpen()"
+          [attr.aria-label]="menuOpen() ? 'Cerrar menú' : 'Abrir menú'"
+          (click)="toggleMenu(); $event.stopPropagation()"
+        >
           <span></span><span></span><span></span>
         </button>
       </div>
     </header>
-    <router-outlet />
+    <main id="main-content">
+      <router-outlet />
+    </main>
     <footer>
       <div class="wrap">
         <div class="footer-inner">
-          <img src="/logotype.svg" />
+          <img ngSrc="/logotype.svg" width="148" height="30" alt="Quadratic Solution" />
           <div class="footer-links">
             <a href="#servicios">Servicios</a>
             <a href="#productos">Productos</a>
             <a href="#enfoque">Enfoque</a>
             <a href="#contacto">Contacto</a>
+            <a [href]="projectMailto">contacto@quadratics.io</a>
           </div>
-          <div class="copyright">© 2026 Quadratic Solutions</div>
+          <div class="copyright">© 2026 Quadratic Solution</div>
         </div>
       </div>
     </footer>`,
 })
 export class App {
-  protected readonly title = signal('quadratics-web');
+  protected readonly projectMailto = projectMailto;
+  protected readonly menuOpen = signal(false);
+
+  protected toggleMenu(): void {
+    this.menuOpen.update((isOpen) => !isOpen);
+  }
+
+  protected closeMenu(): void {
+    this.menuOpen.set(false);
+  }
 }
